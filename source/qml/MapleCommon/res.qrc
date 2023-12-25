@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/MapleCommon">
+        <file>Images/close.svg</file>
+        <file>Images/max.svg</file>
+        <file>Images/min.svg</file>
+
+    </qresource>
+    <qresource prefix="/MapleCommon">
+        <file>Controls/MapleAccordion.qml</file>
+        <file>Controls/MapleAccordionItem.qml</file>
+        <file>Controls/MapleBorderDrager.qml</file>
+        <file>Controls/MapleButton.qml</file>
+        <file>Controls/MapleComboBoxItem.qml</file>
+        <file>Controls/MapleTextField.qml</file>
+        <file>Controls/MapleComboBoxPanel.qml</file>
+        <file>Controls/MapleDisplayPanel.qml</file>
+        <file>Controls/MapleDrager.qml</file>
+        <file>Controls/MapleFilePanel.qml</file>
+        <file>Controls/MapleLoger.qml</file>
+        <file>Controls/MapleMenu.qml</file>
+        <file>Controls/MapleMenuButton.qml</file>
+        <file>Controls/MapleTitleBar.qml</file>
+        <file>Controls/MapleWaitPopup.qml</file>
+        <file>Controls/MapleWindow.qml</file>
+        <file>qmldir</file>
+    </qresource>
+</RCC>

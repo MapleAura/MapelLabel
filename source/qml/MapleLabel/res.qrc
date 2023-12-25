@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/MapleLabel">
+        <file>Images/ai.svg</file>
+        <file>Images/erase.svg</file>
+        <file>Images/group.svg</file>
+        <file>Images/logo.svg</file>
+        <file>Images/open.svg</file>
+        <file>Images/point.svg</file>
+        <file>Images/polygen.svg</file>
+        <file>Images/rect.svg</file>
+        <file>Images/redo.svg</file>
+        <file>Images/save.svg</file>
+        <file>Images/select.svg</file>
+        <file>Images/undo.svg</file>
+        <file>Images/ungroup.svg</file>
+        <file>Images/next.svg</file>
+        <file>Images/last.svg</file>
+    </qresource>
+    <qresource prefix="/MapleLabel">
+        <file>Controls/MapleLabel.qml</file>
+        <file>qmldir</file>
+    </qresource>
+</RCC>

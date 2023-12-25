@@ -1,0 +1,11 @@
+module MapleCanvas
+MapleCanvas 1.0 Controls/MapleCanvas.qml
+MapleTool 1.0 Controls/MapleTool.qml
+MaplePoint 1.0 Controls/MaplePoint.qml
+MapleRect 1.0 Controls/MapleRect.qml
+MaplePolygen 1.0 Controls/MaplePolygen.qml
+MapleLine 1.0 Controls/MapleLine.qml
+MapleSelector 1.0 Controls/MapleSelector.qml
+MapleEraser 1.0 Controls/MapleEraser.qml
+MapleGroup 1.0 Controls/MapleGroup.qml
+MapleUnGroup 1.0 Controls/MapleUnGroup.qml

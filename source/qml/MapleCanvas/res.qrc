@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/MapleCanvas">
+        <file>Images/rotation.svg</file>
+        <file>Images/drcursor.svg</file>
+        <file>Images/dragcursor.svg</file>
+    </qresource>
+    <qresource prefix="/MapleCanvas">
+        <file>Controls/MapleCanvas.qml</file>
+        <file>Controls/MapleEraser.qml</file>
+        <file>Controls/MapleGroup.qml</file>
+        <file>Controls/MapleLine.qml</file>
+        <file>Controls/MaplePoint.qml</file>
+        <file>Controls/MaplePolygen.qml</file>
+        <file>Controls/MapleRect.qml</file>
+        <file>Controls/MapleSelector.qml</file>
+        <file>Controls/MapleTool.qml</file>
+        <file>Controls/MapleUnGroup.qml</file>
+        <file>qmldir</file>
+    </qresource>
+</RCC>

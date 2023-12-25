@@ -1,0 +1,12 @@
+*.png
+*.jpg
+*.maple
+*.pyc
+build
+dist
+*.onnx
+*.pt
+res.py
+*.bin
+resource
+test

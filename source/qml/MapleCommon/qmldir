@@ -1,0 +1,16 @@
+module MapleCommon 
+MapleDrager 1.0 Controls/MapleDrager.qml
+MapleBorderDrager 1.0 Controls/MapleBorderDrager.qml
+MapleTitleBar 1.0 Controls/MapleTitleBar.qml
+MapleMenu 1.0 Controls/MapleMenu.qml
+MapleMenuButton 1.0 Controls/MapleMenuButton.qml
+MapleAccordion 1.0 Controls/MapleAccordion.qml
+MapleAccordionItem 1.0 Controls/MapleAccordionItem.qml
+MapleFilePanel 1.0 Controls/MapleFilePanel.qml
+MapleDisplayPanel 1.0 Controls/MapleDisplayPanel.qml
+MapleComboBoxPanel 1.0 Controls/MapleComboBoxPanel.qml
+MapleWaitPopup 1.0 Controls/MapleWaitPopup.qml
+MapleWindow 1.0 Controls/MapleWindow.qml
+MapleLoger 1.0  Controls/MapleLoger.qml
+MapleButton 1.0  Controls/MapleButton.qml
+MapleTextField 1.0  Controls/MapleTextField.qml
