@@ -1,6 +1,9 @@
 name: Build Executable
 
-on: [push]
+on: 
+  push:
+    tags:
+      - '*'  # 任何tag都会触发工作流
 
 jobs:
   build:
@@ -35,3 +38,25 @@ jobs:
       with:
         name: windows-executable
         path: MapleLabel.zip
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body: Description of the release
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./MapleLabel.zip
+        asset_name: MapleLabel.zip
+        asset_content_type: application/zip
