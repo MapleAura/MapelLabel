@@ -1,4 +1,4 @@
-name: Build Python Executable
+name: Build Executable
 
 on: [push]
 
@@ -29,4 +29,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: windows-executable
-        path: dist/MapleLabel.exe
+        path: .\dist\MapleLabel.exe
