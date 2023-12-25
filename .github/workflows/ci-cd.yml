@@ -46,8 +46,6 @@ jobs:
 
     - name: Push release to public repository
       uses: actions/github-script@v6
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
         script: |
           const fs = require('fs');
@@ -56,7 +54,7 @@ jobs:
           const repo = 'MapleLabelPub';
           const tag = process.env.TAG_NAME;
           
-          // 创建新的GitHub Release
+          // Create a new GitHub Release
           const releaseResponse = await github.rest.repos.createRelease({
             owner,
             repo,
@@ -67,7 +65,7 @@ jobs:
           
           const { upload_url } = releaseResponse.data;
           
-          // 上传ZIP包作为Release Asset
+          // Upload the ZIP package as a Release Asset
           await github.rest.repos.uploadReleaseAsset({
             url: upload_url,
             headers: {
@@ -77,3 +75,4 @@ jobs:
             name: `${tag}-MapleLabel.zip`,
             data: fs.readFileSync(path)
           });
+        github-token: ${{ secrets.API_TOKEN_GITHUB }}
