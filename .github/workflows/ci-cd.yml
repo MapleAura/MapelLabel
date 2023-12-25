@@ -1,4 +1,4 @@
-name: Build Executable
+name: Build Executable and Release
 
 on: 
   push:
@@ -8,64 +8,72 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: '3.8'
 
     - name: Install PyInstaller
       run: pip install pyinstaller
 
-    # 如果你的项目需要其他依赖，也在这里安装
     - name: Install dependencies
       run: pip install -r requirements.txt
+
+    # 如果你的项目需要其他的构建步骤，例如构建前端代码，也可以在这里添加
+    # ...
 
     - name: Run build script
       run: .\script\packer.bat
       shell: cmd
 
-    # 使用PowerShell创建ZIP包
     - name: Zip files
-      run: Compress-Archive -Path dist\MapleLabel\* -DestinationPath MapleLabel.zip # 替换成实际路径和文件名
+      run: Compress-Archive -Path dist\MapleLabel\* -DestinationPath MapleLabel.zip
       shell: powershell
 
-    # 可以根据实际输出的exe文件名修改 'your_script.exe'
     - name: Upload ZIP as artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: windows-executable
         path: MapleLabel.zip
 
+    - name: Extract tag name
+      run: echo "TAG_NAME=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
+      shell: bash
+
     - name: Push release to public repository
-      uses: actions/github-script@0.9.0
+      uses: actions/github-script@v6
       env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }} # 设置为访问公共仓库的Personal Access Token
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        github-token: ${{ env.API_TOKEN_GITHUB }}
         script: |
           const fs = require('fs');
-          const path = 'MapleLabel.zip'; // 必要时更改文件名
-          const content = fs.readFileSync(path, {encoding: 'base64'});
-          // 这里填写公开仓库的owner和repo
+          const path = 'MapleLabel.zip';
           const owner = 'MapleAura';
           const repo = 'MapleLabelPub';
-          const tag = ${{ github.ref }}; // 根据实际情况设置tag
-          const releaseResponse = await github.repos.createRelease({
+          const tag = process.env.TAG_NAME;
+          
+          // 创建新的GitHub Release
+          const releaseResponse = await github.rest.repos.createRelease({
             owner,
             repo,
             tag_name: tag,
-            name: tag,
+            name: `Release ${tag}`,
+            body: `Release of version ${tag}`
           });
+          
           const { upload_url } = releaseResponse.data;
-          await github.repos.uploadReleaseAsset({
+          
+          // 上传ZIP包作为Release Asset
+          await github.rest.repos.uploadReleaseAsset({
             url: upload_url,
             headers: {
               'content-type': 'application/octet-stream',
               'content-length': fs.statSync(path).size,
             },
-            name: path,
-            data: fs.readFileSync(path),
+            name: `${tag}-MapleLabel.zip`,
+            data: fs.readFileSync(path)
           });
