@@ -24,9 +24,14 @@ jobs:
       run: .\script\packer.bat
       shell: cmd
 
+    # 使用PowerShell创建ZIP包
+    - name: Zip files
+      run: Compress-Archive -Path dist\MapleLabel\* -DestinationPath MapleLabel.zip # 替换成实际路径和文件名
+      shell: powershell
+
     # 可以根据实际输出的exe文件名修改 'your_script.exe'
-    - name: Upload Executable Artifact
+    - name: Upload ZIP as artifact
       uses: actions/upload-artifact@v2
       with:
         name: windows-executable
-        path: .\dist\MapleLabel.exe
+        path: MapleLabel.zip
