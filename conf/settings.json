@@ -1,0 +1,24 @@
+{
+    "rect": [
+        {
+            "key": "objType",
+            "value": [
+                "NULL",
+                "Car",
+                "Pedestrian",
+                "Cyclist",
+                "Van",
+                "Truck",
+                "Bus",
+                "Animal",
+                "Other"
+            ]
+        }
+    ],
+    "polygen": [
+        {
+            "key": "ocr",
+            "value": []
+        }
+    ]
+}

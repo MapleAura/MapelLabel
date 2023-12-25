@@ -1,0 +1,32 @@
+name: Build Python Executable
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install PyInstaller
+      run: pip install pyinstaller
+
+    # 如果你的项目需要其他依赖，也在这里安装
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run build script
+      run: .\script\packer.bat
+      shell: cmd
+
+    # 可以根据实际输出的exe文件名修改 'your_script.exe'
+    - name: Upload Executable Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-executable
+        path: dist/MapleLabel.exe
