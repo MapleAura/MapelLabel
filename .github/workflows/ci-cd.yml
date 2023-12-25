@@ -39,24 +39,33 @@ jobs:
         name: windows-executable
         path: MapleLabel.zip
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
+    - name: Push release to public repository
+      uses: actions/github-script@0.9.0
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }} # 设置为访问公共仓库的Personal Access Token
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: Description of the release
-        draft: false
-        prerelease: false
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./MapleLabel.zip
-        asset_name: MapleLabel.zip
-        asset_content_type: application/zip
+        github-token: ${{ env.API_TOKEN_GITHUB }}
+        script: |
+          const fs = require('fs');
+          const path = 'MapleLabel.zip'; // 必要时更改文件名
+          const content = fs.readFileSync(path, {encoding: 'base64'});
+          // 这里填写公开仓库的owner和repo
+          const owner = 'MapleAura';
+          const repo = 'MapleLabelPub';
+          const tag = ${{ github.ref }}; // 根据实际情况设置tag
+          const releaseResponse = await github.repos.createRelease({
+            owner,
+            repo,
+            tag_name: tag,
+            name: tag,
+          });
+          const { upload_url } = releaseResponse.data;
+          await github.repos.uploadReleaseAsset({
+            url: upload_url,
+            headers: {
+              'content-type': 'application/octet-stream',
+              'content-length': fs.statSync(path).size,
+            },
+            name: path,
+            data: fs.readFileSync(path),
+          });
