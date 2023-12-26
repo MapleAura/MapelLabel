@@ -12,3 +12,4 @@ PySide6-Addons==6.5.2
 PySide6-Essentials==6.5.2
 shiboken6==6.5.2
 sympy==1.12
+psutil
