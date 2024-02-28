@@ -178,9 +178,10 @@ MapleSelector {
         for (var i in ctx.shapes) {
             var shape = ctx.shapes[i]
             var obj = controller.mapleTools[controller.toolTypeLUT[shape.type]].createObject(root)  
+            obj.controller = controller
             obj.reConstruct(shape)
             obj.activatedClicked.connect(bindActivated)
-            obj.positionChanged.connect(controller.updateModelListInfo)
+            obj.positionChanged.connect(controller.updateCurInstModelInfo)
             container.push(obj)
         }
         reConstructExtraParams(ctx)
