@@ -14,7 +14,7 @@ Window {
     MapleWindow {
         id: root
         oriWindow: window
-        title: "MapleLabel v1.0.2"
+        title: "MapleLabel v1.0.3"
         logo: "qrc:/MapleLabel/Images/logo.svg"
         titleBarColor: "#404040"
         bodyColor: "#282828"
