@@ -1,0 +1,62 @@
+{
+    "rect": [
+        {
+            "key": "class",
+            "value": [
+                "NULL",
+                "Sedan",
+                "SUV",
+                "MPV",
+                "Pickup Truck",
+                "Super Car",
+                "Mini Van",
+                "Bus",
+                "Truck",
+                "Tricycle"
+            ]
+        },
+        {
+            "key": "color",
+            "value": [
+                "NULL",
+                "White",
+                "Gray",
+                "Yelllow",
+                "Pink",
+                "Red",
+                "Purple",
+                "Green",
+                "Blue",
+                "Blown",
+                "Black"
+            ]
+        }
+    ],
+    "polygen": [
+        {
+            "key": "ocr",
+            "value": []
+        },
+        {
+            "key": "color",
+            "value": [
+                "NULL",
+                "Blue",
+                "Yellow",
+                "White",
+                "Block",
+                "Green",
+                "Red"
+            ]
+        }
+    ],
+    "annotation": [
+        {
+            "key": "color",
+            "value": [
+                "NULL",
+                "Red"
+            ]
+        }
+    ]
+}

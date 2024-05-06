@@ -14,7 +14,9 @@ Item {
         Rect,
         Polygen,
         Save,
-        Undo
+        Undo,
+        Redo,
+        Anno
     }
 
     property var toolType: MapleTool.ToolType.None

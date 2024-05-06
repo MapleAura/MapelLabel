@@ -5,7 +5,7 @@ if __name__ == "__main__":
     folder = os.path.exists("resource")
     if not folder:                  
         os.makedirs("resource")
-    for parent, dirnames, filenames in os.walk("models"): 
+    for parent, dirnames, filenames in os.walk("resource"): 
         for filename in filenames:
             if ".json" in filename:
                 ctx = file.readFile(os.path.join(parent, filename), "rb", "")

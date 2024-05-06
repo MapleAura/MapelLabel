@@ -1,0 +1,14 @@
+{
+    "rect": [
+        {
+            "key": "AutoLabel",
+            "value": [
+                "car",
+                "bus",
+                "truck",
+                "van",
+                "person"
+            ]
+        }
+    ]
+}

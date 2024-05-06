@@ -4,6 +4,7 @@ import QtQuick.Controls
 Image {
     id: root
     property var settings: null
+    property var annotations: {}
     property var extraParamsIn: null
     property var extraParamsOut: null
     property var mapleTools: {"none": null}
@@ -119,6 +120,9 @@ Image {
         if (toolType === MapleTool.ToolType.Redo) {
             redo()
         }
+        if (toolType === MapleTool.ToolType.Anno) {
+            updateAnnotationOutputParams()
+        }
     }
 
     onInstsChanged: {
@@ -162,11 +166,11 @@ Image {
 
         updateActivatedStates()
         updateCurInstModelInfo()
-        updateOutputExtraParams()
+        updateShapeOutputExtraParams()
         
     }
 
-    function updateOutputExtraParams() {
+    function updateShapeOutputExtraParams() {
         var paramsOut = {}
         if (curActivatedInsts  !== null && curActivatedInsts.length > 0) {
             paramsOut.allItems = settings[curActivatedInsts[0].shapeType]
@@ -184,6 +188,11 @@ Image {
     onExtraParamsInChanged: {
         if (curActivatedInsts !== null && curActivatedInsts.length > 0) {
             curActivatedInsts[0].extraParams = extraParamsIn
+        } else {
+            if (typeof extraParamsIn !== 'undefined') {
+                annotations.curSelectedItems = extraParamsIn
+            }
+           
         }
     }
 
@@ -223,7 +232,10 @@ Image {
         }
         historyRecoder = []
         insts = []
-        
+        resetAnnotation()
+        if (toolType === MapleTool.ToolType.Anno) {
+            updateAnnotationOutputParams()
+        }
     }
 
     function undo() {
@@ -276,6 +288,36 @@ Image {
         redoEnable = false
     }
 
+    function resetAnnotation() {
+        if (settings !== null && "annotation" in settings) {
+  
+            annotations = {}
+            var anno = settings["annotation"]
+            annotations.allItems = anno
+            var curValues = []
+            for (var i in anno) {
+                var item = anno[i]
+                var curValue = {}
+                curValue["key"] = item.key
+                if (item.value.length > 0) {
+                    curValue["value"] = item.value[0]
+                } else {
+                    curValue["value"] = ""
+                }
+                
+                curValues.push(curValue)
+            }
+            annotations.curSelectedItems = curValues   
+            
+        }
+    }
+
+    function updateAnnotationOutputParams() {
+        curActivatedInsts = []
+        extraParamsOut = null
+        extraParamsOut = annotations
+    }
+
     function updateCurInstModelInfo() {
         var tmp = Qt.createQmlObject("import QtQuick; ListModel {}", parent);
         if (curActivatedInsts !== null && curActivatedInsts.length > 0) {
@@ -318,6 +360,34 @@ Image {
 
     }
 
+    function reConstructAnnotation(ctx) {
+        var keys = Object.keys(ctx)
+        var extraRes = []
+        for (var i in keys) {
+            var tmp ={ }
+            var key = keys[i]
+            tmp["key"] = key
+            tmp["value"] = ctx[key]
+            extraRes.push(tmp)
+        }  
+        annotations.curSelectedItems = extraRes
+        
+        if (toolType === MapleTool.ToolType.Anno) {
+            updateAnnotationOutputParams()
+        }
+    }
+
+    function serializeAnnotation(obj) {
+        if (annotations?.curSelectedItems) {
+            var anno_output = {}
+            for (var i in annotations.curSelectedItems) {
+                anno_output[annotations.curSelectedItems[i].key] = annotations.curSelectedItems[i].value
+            }  
+            obj.annotation = anno_output
+        }
+    }
+
+
     function saveJsonFile(path, content) {
         if (path === null) {
             return 
@@ -349,8 +419,12 @@ Image {
         if (ctx === null) {
             return 
         }
-        var tmp = []
 
+        if (ctx.annotation) {
+            reConstructAnnotation(ctx.annotation)
+        }
+
+        var tmp = []
         // try {
             var shapes = ctx["shapes"]
             for (var i in shapes) {
@@ -373,15 +447,18 @@ Image {
             return 
         }
         var obj = {}
-        obj.version = "1.0.1"
+        obj.version = baseInfo.get_version()
+        obj.width = width
+        obj.height = height
+        serializeAnnotation(obj)
         var shapes = []
         for (var i in insts) {
             var shape = insts[i].serialize()
             shapes.push(shape)
         }
-        if (shapes.length < 1 && path.includes(".maple")) {
-            return 
-        }
+        // if (shapes.length < 1 && path.includes(".maple")) {
+        //     return 
+        // }
         obj.shapes = shapes
         saveJsonFile(path, obj)
     }

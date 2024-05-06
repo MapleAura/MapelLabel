@@ -14,7 +14,7 @@ Window {
     MapleWindow {
         id: root
         oriWindow: window
-        title: "MapleLabel v1.0.3"
+        title: "MapleLabel v" + baseInfo.get_version()
         logo: "qrc:/MapleLabel/Images/logo.svg"
         titleBarColor: "#404040"
         bodyColor: "#282828"
@@ -22,6 +22,7 @@ Window {
         property var mapleSettings: null
         property bool autoLabelEnable: false
         property var aiConfigure: null
+        property var props: []
         MapleCanvas {
             id: canvas
             settings: root.mapleSettings
@@ -99,9 +100,14 @@ Window {
                 text:"split shapes"
             }
             MapleMenuButton {
+                menuType:"annotation"
+                source:"qrc:/MapleLabel/Images/ann.svg"
+                text:"annotation"
+            }
+            MapleMenuButton {
                 menuType:"AI"
                 source:"qrc:/MapleLabel/Images/ai.svg"
-                bounceBacked: true
+                // bounceBacked: true
                 text:"use AI"
             }
         }
@@ -189,75 +195,75 @@ Window {
                         dialog.open();
                     }
                     Component.onCompleted: {
-                        try {
-                            var ctx = fileOp.readFile("_internal/resource/aiconfig.json", "rb", "base64_utf-8")                                                    
-                        } catch(err) {
-                            output.text = "Auto label unsupported."
-                            console.log("Auto label unsupported.")
-                            return
-                        }
+                        // try {
+                        //     var ctx = fileOp.readFile("_internal/resource/aiconfig.json", "rb", "base64_utf-8")                                                    
+                        // } catch(err) {
+                        //     output.text = "Auto label unsupported."
+                        //     console.log("Auto label unsupported.")
+                        //     return
+                        // }
                         
-                        var res = watchDog.verify("resource/watchdog.txt")
-                        if (!res) {
-                            output.text = "Unauthorized."
-                            console.log("Unauthorized.")
-                            return
-                        }
+                        // var res = watchDog.verify("resource/watchdog.txt")
+                        // if (!res) {
+                        //     output.text = "Unauthorized."
+                        //     console.log("Unauthorized.")
+                        //     return
+                        // }
                         
-                        root.aiConfigure = JSON.parse(ctx);
-                        var tmp = Qt.createQmlObject("import QtQuick; ListModel {}", parent);
-                        for (var i in root.aiConfigure.source) {
-                            var curItem = root.aiConfigure.source[i]
-                            tmp.append({"value": curItem.name})
-                        }
-                        listModel = tmp  
+                        // root.aiConfigure = JSON.parse(ctx);
+                        // var tmp = Qt.createQmlObject("import QtQuick; ListModel {}", parent);
+                        // for (var i in root.aiConfigure.source) {
+                        //     var curItem = root.aiConfigure.source[i]
+                        //     tmp.append({"value": curItem.name})
+                        // }
+                        // listModel = tmp  
                     }                    
                 }
             }
         }
 
-        Dialog {
-            id: dialog
-            modal: true
-            width: 400
-            height: 125
-            title: qsTr("Remind")
-            anchors.centerIn: parent
-            background: Rectangle {
-                color:"#404040"
-            }
-            Text {
-                anchors.margins: 6
+        // Dialog {
+        //     id: dialog
+        //     modal: true
+        //     width: 400
+        //     height: 125
+        //     title: qsTr("Remind")
+        //     anchors.centerIn: parent
+        //     background: Rectangle {
+        //         color:"#404040"
+        //     }
+        //     Text {
+        //         anchors.margins: 6
                 
-                anchors.fill: parent
-                id: text
-                text: qsTr("The files in the current folder will be automatically labeled, click the OK button to confirm the operation.")
-                anchors.centerIn: parent
-                wrapMode: Text.WordWrap
-                color:"white"
-            }
+        //         anchors.fill: parent
+        //         id: text
+        //         text: qsTr("The files in the current folder will be automatically labeled, click the OK button to confirm the operation.")
+        //         anchors.centerIn: parent
+        //         wrapMode: Text.WordWrap
+        //         color:"white"
+        //     }
 
-            standardButtons: Dialog.Ok | Dialog.Cancel
-            onAccepted: {
-                for (var i in root.aiConfigure.source) {
-                    var sr = root.aiConfigure.source[i]
-                    if (sr.name === aiList.currentItem) {
+        //     standardButtons: Dialog.Ok | Dialog.Cancel
+        //     onAccepted: {
+        //         for (var i in root.aiConfigure.source) {
+        //             var sr = root.aiConfigure.source[i]
+        //             if (sr.name === aiList.currentItem) {
 
-                        root.setTimeout(function() {
-                            popup.open()
-                            popup.text = "Loading model..."
-                        }, 0)
-                        root.setTimeout(function() {
-                            autoLabel.create(JSON.stringify(sr.ctx))
-                            root.autoLabelEnable = true
-                            popup.close()
+        //                 root.setTimeout(function() {
+        //                     popup.open()
+        //                     popup.text = "Loading model..."
+        //                 }, 0)
+        //                 root.setTimeout(function() {
+        //                     autoLabel.create()
+        //                     root.autoLabelEnable = true
+        //                     popup.close()
           
-                        }, 10)
-                        break
-                    }
-                }
-            }
-        }
+        //                 }, 10)
+        //                 break
+        //             }
+        //         }
+        //     }
+        // }
 
         MapleLoger {
             id: output
@@ -317,6 +323,7 @@ Window {
                     "save":MapleTool.ToolType.Save,
                     "undo":MapleTool.ToolType.Undo,
                     "redo":MapleTool.ToolType.Redo,
+                    "annotation":MapleTool.ToolType.Anno,
                 }
                 if (type in canvasTools) {
                     canvas.toolType = canvasTools[type]
@@ -327,7 +334,19 @@ Window {
                     filePanel.dialogOpened = true
                 } 
                 if (type === "AI") {
-                    hiddenBox.isOpened = !hiddenBox.isOpened
+                    root.setTimeout(function() {
+                        popup.open()
+                        popup.text = "Loading model..."
+                    }, 0)
+                    root.setTimeout(function() {
+                        autoLabel.create()
+                        autoLabel.set_classes(root.props)
+                        popup.close()
+        
+                    }, 10)
+                    root.autoLabelEnable = true
+                } else {
+                    root.autoLabelEnable = false
                 }
             })
 
@@ -336,13 +355,14 @@ Window {
                 var jname = path.substring(0, path.lastIndexOf(".")) + ".json"
                 var isExist = fileOp.isExist(mpname)
                 var jisExist = fileOp.isExist(jname)
+
                 if (!isExist && !jisExist && autoLabelEnable) {
                     root.setTimeout(function() {
                         popup.open()
                         popup.text = "Current data is being processed..."
                     }, 0)
                     root.setTimeout(function() {
-                        autoLabel.run(path)
+                        autoLabel.run(path, jname)
                         popup.close()
                         canvas.source = path
                     }, 10)
@@ -354,6 +374,21 @@ Window {
 
             var ctx = fileOp.readFile("_internal/conf/settings.json", "rb", "utf-8")
             root.mapleSettings = JSON.parse(ctx);
+            if (root.mapleSettings && Array.isArray(root.mapleSettings["rect"])) {
+                var rects = root.mapleSettings["rect"];
+                for (var i = 0; i < rects.length; i++) {
+                    var item = rects[i];
+                    // 检查对象键是否为 "AutoLabel"
+                    if (item.key === "AutoLabel") {
+                        // 如果是，则更新 root 对象的 props 属性
+                        root.props = item.value;
+                        
+                        break; // 找到后就可以退出循环了
+                    }
+                }
+            } else {
+                output.text = "No prompt."
+            }
         }
 
         function setTimeout(callback, timeout){
@@ -374,6 +409,13 @@ Window {
             if (!groupShape.merge()) {
                 groupShape.destroy()
             }
+        }
+    }
+
+    Shortcut {
+        sequence: "i"
+        onActivated: {
+            menu.selectMenuButton("annotation")
         }
     }
 

@@ -1,6 +1,4 @@
-from PySide6.QtGui import QGuiApplication
-from PySide6.QtQml import QQmlApplicationEngine
-from PySide6.QtCore import QUrl, QObject, Signal, Slot
+from PySide6.QtCore import QObject,  Slot
 import os 
 import base64
 
