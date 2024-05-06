@@ -51,7 +51,7 @@ jobs:
           const fs = require('fs');
           const path = 'MapleLabel.zip';
           const owner = 'MapleAura';
-          const repo = 'MapleLabelPub';
+          const repo = 'MapleLabel';
           const tag = process.env.TAG_NAME;
           
           // Create a new GitHub Release
