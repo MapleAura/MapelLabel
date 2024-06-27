@@ -2,3 +2,4 @@ pyinstaller
 PySide6
 pillow
 onnxruntime
+ftfy
