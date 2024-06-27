@@ -29,23 +29,8 @@ jobs:
       run: Compress-Archive -Path dist\MapleLabel\* -DestinationPath MapleLabel.zip
       shell: powershell
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
       with:
-        tag_name: ${{ github.ref }}  # 使用触发tag
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./MapleLabel.zip
-        asset_name: MapleLabel.zip
-        asset_content_type: application/zip
+        name: MapleLabel
+        path: MapleLabel.zip
