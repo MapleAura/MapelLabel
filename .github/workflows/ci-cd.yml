@@ -32,23 +32,26 @@ jobs:
           Compress-Archive -Path dist\MapleLabel\* -DestinationPath MapleLabel.zip
         shell: pwsh
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: Release for ${{ github.ref }}
-          draft: false
-          prerelease: false
+      - name: Check if release exists
+        id: check_release
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          if gh release view "$TAG_NAME"; then
+            echo "::set-output name=release_exists::true"
+          else
+            echo "::set-output name=release_exists::false"
+          fi
         env:
-          GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
-        
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./MapleLabel.zip
-          asset_name: MapleLabel.zip
-          asset_content_type: application/zip
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create or Update Release
+        id: create_or_update_release
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          if [ "${{ steps.check_release.outputs.release_exists }}" == "false" ]; then
+            gh release create "$TAG_NAME" "./MapleLabel.zip" -t "$TAG_NAME" -n "Release for $TAG_NAME"
+          else
+            gh release upload "$TAG_NAME" "./MapleLabel.zip" --clobber
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
