@@ -32,26 +32,33 @@ jobs:
           Compress-Archive -Path dist\MapleLabel\* -DestinationPath MapleLabel.zip
         shell: pwsh
 
+      - name: Set up GitHub CLI
+        run: |
+          choco install gh
+        shell: pwsh
+
       - name: Check if release exists
         id: check_release
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          if gh release view "$TAG_NAME"; then
-            echo "::set-output name=release_exists::true"
-          else
+          $tag_name = $env:GITHUB_REF -replace 'refs/tags/', ''
+          $release = gh release view $tag_name --json url 2>$null
+          if ($null -eq $release) {
             echo "::set-output name=release_exists::false"
-          fi
+          } else {
+            echo "::set-output name=release_exists::true"
+          }
+        shell: pwsh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
 
       - name: Create or Update Release
-        id: create_or_update_release
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}
-          if [ "${{ steps.check_release.outputs.release_exists }}" == "false" ]; then
-            gh release create "$TAG_NAME" "./MapleLabel.zip" -t "$TAG_NAME" -n "Release for $TAG_NAME"
-          else
-            gh release upload "$TAG_NAME" "./MapleLabel.zip" --clobber
-          fi
+          $tag_name = $env:GITHUB_REF -replace 'refs/tags/', ''
+          if (${{ steps.check_release.outputs.release_exists }} -eq 'false') {
+            gh release create $tag_name ./MapleLabel.zip -t $tag_name -n "Release for $tag_name"
+          } else {
+            gh release upload $tag_name ./MapleLabel.zip --clobber
+          }
+        shell: pwsh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
