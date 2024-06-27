@@ -29,8 +29,35 @@ jobs:
       run: Compress-Archive -Path dist\MapleLabel\* -DestinationPath MapleLabel.zip
       shell: powershell
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
+    -- name: Check if tag exists and create one if necessary
+      id: tag_check
+      run: |
+        TAG=${GITHUB_REF##*/}
+        if git tag -l | grep -q "^${TAG}$"; then
+          NEW_TAG="${TAG}-${GITHUB_SHA::7}"
+          git tag $NEW_TAG
+          echo "::set-output name=tag_name::$NEW_TAG"
+        else
+          echo "::set-output name=tag_name::$TAG"
+        fi
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        name: MapleLabel
-        path: MapleLabel.zip
+        tag_name: ${{ steps.tag_check.outputs.tag_name }}
+        release_name: Release ${{ steps.tag_check.outputs.tag_name }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./MapleLabel.zip
+        asset_name: MapleLabel.zip
+        asset_content_type: application/zip
