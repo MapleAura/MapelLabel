@@ -81,7 +81,7 @@ class AutoLabel(QObject):
         # 创建新的图片，背景为 padding_color
         padded_image = Image.new('RGB', (new_width, new_height), color=padding_color)
         padded_image.paste(image, (0, 0))  # 原始图片粘贴到新图片的左上角
-        return image
+        return padded_image
         
     @Slot(str,  str, result=str)
     def run(self, path, output_path):
